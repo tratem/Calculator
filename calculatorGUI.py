@@ -1,6 +1,7 @@
 #iphone calculator GUI
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QWidget, QLabel
+from PyQt5.QtCore import Qt
 from calculator_source import CalculatorOperations as CO
 
 class MainWindow(QMainWindow):
@@ -23,9 +24,17 @@ class MainWindow(QMainWindow):
         first_row_layout = QHBoxLayout()
         fifth_row_layout = QHBoxLayout()
 
+        self.old_calculations = QLabel()
+        self.old_calculations.setFixedHeight(50)
+        self.old_calculations.setStyleSheet("background-color: black; color: white; font: bold 30px;")
+        self.old_calculations.setAlignment(Qt.AlignRight)
+        self.old_calculations.mousePressEvent = self.transfer_text
+        calculator_layout.addWidget(self.old_calculations)
+
         self.current_calculations = QLineEdit()
         self.current_calculations.setFixedHeight(80)
-        self.current_calculations.setStyleSheet("background-color: black; color: white; font: bold 60px;")
+        self.current_calculations.setStyleSheet("background-color: black; color: white; font: bold 60px; border: none;")
+        self.current_calculations.setAlignment(Qt.AlignRight)
         calculator_layout.addWidget(self.current_calculations)
 
         first_row_list = ["AC", "neg", "%"]
@@ -95,6 +104,7 @@ class MainWindow(QMainWindow):
                 self.current_calculations.setText(current_text + button_text)
 
     def handle_operations(self):
+        self.old_calculations.setText(self.current_calculations.text())
         current_text = self.current_calculations.text()
         second_number = False
         x = 0
@@ -119,6 +129,8 @@ class MainWindow(QMainWindow):
         elif operation == "/":
             self.current_calculations.setText(str(CO.division(x, y)))
 
+    def transfer_text(self, event):
+        self.current_calculations.setText(self.old_calculations.text())
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

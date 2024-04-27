@@ -18,9 +18,7 @@ class CalculatorOperations:
     def percentile(x, y, operator):
         if operator == "+":    
             return format(x + x * y / 100, ".2f")
-        if operator == "-":    
+        elif operator == "-":    
             return format(x - x * y / 100, ".2f")
-        if operator == "/":    
-            return format(x / x * y / 100, ".2f")
-        if operator == "*":    
-            return format(x * x * y / 100, ".2f")
+        else:
+            return "ERROR"

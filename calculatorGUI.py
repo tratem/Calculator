@@ -104,10 +104,12 @@ class MainWindow(QMainWindow):
                 x = x * 10 + int(value)
             elif value.isdigit() and second_number == True:
                 y = y * 10 + int(value)
-            else:
+            elif value in ["/", "x", "-", "+"]:
                 operation = value
                 second_number = True
-        if operation == "+":
+        if ("%" in current_text):
+            self.numbers_line_edit.setText(str(CO.percentile(x, y, operation)))
+        elif operation == "+":
             self.numbers_line_edit.setText(str(CO.addition(x, y)))
         elif operation == "-":
             self.numbers_line_edit.setText(str(CO.subtraction(x, y)))
@@ -115,6 +117,8 @@ class MainWindow(QMainWindow):
             self.numbers_line_edit.setText(str(CO.multiplication(x, y)))
         elif operation == "/":
             self.numbers_line_edit.setText(str(CO.division(x, y)))
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()

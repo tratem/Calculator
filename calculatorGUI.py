@@ -23,10 +23,10 @@ class MainWindow(QMainWindow):
         first_row_layout = QHBoxLayout()
         fifth_row_layout = QHBoxLayout()
 
-        self.numbers_line_edit = QLineEdit()
-        self.numbers_line_edit.setFixedHeight(80)
-        self.numbers_line_edit.setStyleSheet("background-color: black; color: white; font: bold 60px;")
-        calculator_layout.addWidget(self.numbers_line_edit)
+        self.current_calculations = QLineEdit()
+        self.current_calculations.setFixedHeight(80)
+        self.current_calculations.setStyleSheet("background-color: black; color: white; font: bold 60px;")
+        calculator_layout.addWidget(self.current_calculations)
 
         first_row_list = ["AC", "neg", "%"]
         for j in first_row_list:
@@ -78,27 +78,28 @@ class MainWindow(QMainWindow):
     
     def handle_button_click(self):
         button = self.sender()
-        current_text = self.numbers_line_edit.text()
+        current_text = self.current_calculations.text()
         button_text = button.text()
 
         if button_text == "AC":
-            self.numbers_line_edit.clear()
+            self.current_calculations.clear()
         elif button_text == "=":
             self.handle_operations()
         else:
             if button_text == "neg" and current_text:
                 if current_text.startswith('-'):
-                    self.numbers_line_edit.setText(current_text[1:])
+                    self.current_calculations.setText(current_text[1:])
                 else:
-                    self.numbers_line_edit.setText('-' + current_text)
+                    self.current_calculations.setText('-' + current_text)
             else:
-                self.numbers_line_edit.setText(current_text + button_text)
+                self.current_calculations.setText(current_text + button_text)
 
     def handle_operations(self):
-        current_text = self.numbers_line_edit.text()
+        current_text = self.current_calculations.text()
         second_number = False
         x = 0
         y = 0
+        operation = "+"
         for value in current_text: 
             if value.isdigit() and second_number == False:
                 x = x * 10 + int(value)
@@ -108,15 +109,15 @@ class MainWindow(QMainWindow):
                 operation = value
                 second_number = True
         if ("%" in current_text):
-            self.numbers_line_edit.setText(str(CO.percentile(x, y, operation)))
+            self.current_calculations.setText(str(CO.percentile(x, y, operation)))
         elif operation == "+":
-            self.numbers_line_edit.setText(str(CO.addition(x, y)))
+            self.current_calculations.setText(str(CO.addition(x, y)))
         elif operation == "-":
-            self.numbers_line_edit.setText(str(CO.subtraction(x, y)))
+            self.current_calculations.setText(str(CO.subtraction(x, y)))
         elif operation == "*" or operation == "x":
-            self.numbers_line_edit.setText(str(CO.multiplication(x, y)))
+            self.current_calculations.setText(str(CO.multiplication(x, y)))
         elif operation == "/":
-            self.numbers_line_edit.setText(str(CO.division(x, y)))
+            self.current_calculations.setText(str(CO.division(x, y)))
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ class CalculatorOperations:
         return format(x - y, ".2f")
 
     def multiplication(x , y):
-        format(x * y, ".2f")
+        return format(x * y, ".2f")
 
     def division(x , y):
         if (y == 0):

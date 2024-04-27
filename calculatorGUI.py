@@ -7,10 +7,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()    
         self.setWindowTitle("iPhone Calculator")
-        self.setGeometry(50, 50, 320, 520)
-
-        self.line_text = ""
-        
+        self.setGeometry(50, 50, 320, 520)        
         self.setupUi()
 
     def setupUi(self):
@@ -29,9 +26,7 @@ class MainWindow(QMainWindow):
         self.numbers_line_edit = QLineEdit()
         self.numbers_line_edit.setFixedHeight(80)
         self.numbers_line_edit.setStyleSheet("background-color: black; color: white; font: bold 60px;")
-        self.numbers_line_edit.textChanged.connect(self.handle_line_change)
         calculator_layout.addWidget(self.numbers_line_edit)
-
 
         first_row_list = ["AC", "neg", "%"]
         for j in first_row_list:
@@ -83,32 +78,43 @@ class MainWindow(QMainWindow):
     
     def handle_button_click(self):
         button = self.sender()
-        value = button.text()
-        if value == "=":
+        current_text = self.numbers_line_edit.text()
+        button_text = button.text()
+
+        if button_text == "AC":
+            self.numbers_line_edit.clear()
+        elif button_text == "=":
             self.handle_operations()
         else:
-            self.numbers_line_edit.setText(value)
-        
-    def handle_line_change(self):
-        self.line_text = self.numbers_line_edit.text()
+            if button_text == "neg" and current_text:
+                if current_text.startswith('-'):
+                    self.numbers_line_edit.setText(current_text[1:])
+                else:
+                    self.numbers_line_edit.setText('-' + current_text)
+            else:
+                self.numbers_line_edit.setText(current_text + button_text)
 
     def handle_operations(self):
+        current_text = self.numbers_line_edit.text()
         second_number = False
         x = 0
         y = 0
-        for value in self.line_text:
+        for value in current_text: 
             if value.isdigit() and second_number == False:
-                x *=10 + int(value)
+                x = x * 10 + int(value)
             elif value.isdigit() and second_number == True:
-                y *=10 + int(value)
-            elif value == "+":
-                self.numbers_line_edit.setText(CO.addition(x, y))
-            elif value == "-":
-                self.numbers_line_edit.setText(CO.subtraction(x, y))
-            elif value == "*":
-                self.numbers_line_edit.setText(CO.multiplication(x, y))
-            elif value == "/":
-                self.numbers_line_edit.setText(CO.division(x, y))
+                y = y * 10 + int(value)
+            else:
+                operation = value
+                second_number = True
+        if operation == "+":
+            self.numbers_line_edit.setText(str(CO.addition(x, y)))
+        elif operation == "-":
+            self.numbers_line_edit.setText(str(CO.subtraction(x, y)))
+        elif operation == "*" or operation == "x":
+            self.numbers_line_edit.setText(str(CO.multiplication(x, y)))
+        elif operation == "/":
+            self.numbers_line_edit.setText(str(CO.division(x, y)))
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()

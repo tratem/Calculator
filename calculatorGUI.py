@@ -57,7 +57,7 @@ class MainWindow(QMainWindow):
         zero_button = self.create_button("0")
         zero_button.setFixedWidth(170)
         zero_button.clicked.connect(self.handle_button_click)
-        comma_button = self.create_button(",")
+        comma_button = self.create_button(".")
         comma_button.clicked.connect(self.handle_button_click)
 
         fifth_row_layout.addWidget(zero_button)
@@ -107,17 +107,27 @@ class MainWindow(QMainWindow):
         self.old_calculations.setText(self.current_calculations.text())
         current_text = self.current_calculations.text()
         second_number = False
+        decimal = False
         x = 0
         y = 0
         operation = "+"
         for value in current_text: 
-            if value.isdigit() and second_number == False:
-                x = x * 10 + int(value)
+            if value == "." or value == ",":
+                decimal = True
+            elif value.isdigit() and second_number == False:
+                if decimal:
+                    x = x + int(value) / 10
+                else:    
+                    x = x * 10 + int(value)
             elif value.isdigit() and second_number == True:
-                y = y * 10 + int(value)
+                if decimal:
+                    y = y + int(value) / 10
+                else:
+                    y = y * 10 + int(value)
             elif value in ["/", "x", "-", "+"]:
                 operation = value
                 second_number = True
+                decimal = False
         if ("%" in current_text):
             self.current_calculations.setText(str(CO.percentile(x, y, operation)))
         elif operation == "+":
